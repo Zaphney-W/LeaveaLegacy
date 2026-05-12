@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostAP Survival Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a18;
+    --ink2: #3d3d38;
+    --ink3: #7a7a72;
+    --paper: #f5f0e8;
+    --paper2: #ede8dc;
+    --paper3: #e0d9ca;
+    --gold: #c8961e;
+    --gold2: #f0c040;
+    --rust: #b84c22;
+    --teal: #1d7a6a;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'Space Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 52px;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--gold2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold2); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 4rem 5rem;
+    position: relative;
+    background: var(--ink);
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 30%, #2a3a30 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 20% 70%, #1a2228 0%, transparent 50%),
+      var(--ink);
+  }
+
+  .hero-ornament {
+    position: absolute;
+    top: 52px; right: 0;
+    width: 55vw; height: calc(100vh - 52px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+  .hero-ornament svg { width: 100%; height: 100%; }
+
+  .hero-tag {
+    position: relative;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-tag::before {
+    content: '';
+    display: block; width: 40px; height: 1px;
+    background: var(--gold);
+  }
+
+  .hero h1 {
+    position: relative;
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 1.0;
+    color: var(--paper);
+    max-width: 700px;
+    margin-bottom: 2rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold2);
+  }
+
+  .hero-sub {
+    position: relative;
+    font-size: 17px;
+    color: #9a9a90;
+    max-width: 480px;
+    margin-bottom: 3rem;
+    line-height: 1.65;
+  }
+
+  .hero-cta {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    background: var(--gold);
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .hero-cta:hover { background: var(--gold2); transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2rem; right: 4rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: #555;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .hero-scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, transparent, #555);
+    animation: scrollpulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollpulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 6rem 4rem; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--paper3);
+    max-width: 120px;
+  }
+
+  h2.section-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.15;
+    margin-bottom: 3rem;
+    color: var(--ink);
+  }
+
+  /* ─── LETTER ─── */
+  #letter {
+    background: var(--paper2);
+    border-top: 3px solid var(--ink);
+  }
+  .letter-body {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--paper3);
+    padding: 4rem 4.5rem;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--paper3);
+  }
+  .letter-body::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+    background: repeating-linear-gradient(90deg, var(--gold) 0, var(--gold) 6px, transparent 6px, transparent 14px);
+  }
+  .letter-date {
+    font-family: var(--mono); font-size: 12px; color: var(--ink3);
+    margin-bottom: 2rem;
+  }
+  .letter-salutation {
+    font-family: var(--serif); font-size: 1.5rem;
+    color: var(--ink); margin-bottom: 1.5rem;
+  }
+  .letter-body p {
+    font-size: 16px; line-height: 1.85;
+    color: var(--ink2); margin-bottom: 1.25rem;
+  }
+  .letter-sig {
+    margin-top: 2.5rem;
+    font-family: var(--serif); font-style: italic;
+    font-size: 1.1rem; color: var(--ink);
+  }
+
+  /* ─── TIPS ─── */
+  #tips { background: var(--paper); }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5px;
+    background: var(--ink);
+    border: 1.5px solid var(--ink);
+    margin-top: 1rem;
+  }
+  .tip-card {
+    background: var(--paper);
+    padding: 2.25rem;
+    position: relative;
+    transition: background 0.25s;
+    cursor: default;
+  }
+  .tip-card:hover { background: var(--paper2); }
+
+  .tip-number {
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .tip-card h3 {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    line-height: 1.25;
+    margin-bottom: 0.85rem;
+    color: var(--ink);
+  }
+  .tip-card p {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink2);
+  }
+  .tip-accent {
+    position: absolute; bottom: 1.5rem; right: 1.75rem;
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--paper3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    color: var(--ink3);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .tip-card:hover .tip-accent { border-color: var(--gold); color: var(--gold); }
+
+  /* ─── PROJECTS ─── */
+  #projects {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  #projects .section-label { color: var(--gold2); }
+  #projects .section-label::after { background: #333; }
+  #projects h2.section-title { color: var(--paper); }
+
+  .projects-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  .project-entry {
+    border-top: 1px solid #333;
+    padding-top: 1.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem;
+  }
+  .project-number {
+    font-family: var(--serif);
+    font-size: 3rem;
+    line-height: 1;
+    color: #2a2a28;
+    user-select: none;
+    width: 56px;
+    text-align: right;
+  }
+  .project-info {}
+  .project-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .project-info h3 {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    line-height: 1.3;
+    color: var(--paper);
+    margin-bottom: 0.6rem;
+  }
+  .project-info p {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: #8a8a80;
+  }
+
+  /* ─── WISDOM PULL QUOTE ─── */
+  #wisdom {
+    background: var(--teal);
+    color: var(--paper);
+    padding: 7rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #wisdom::before, #wisdom::after {
+    content: '"';
+    font-family: var(--serif);
+    font-size: 20rem;
+    line-height: 1;
+    color: rgba(255,255,255,0.04);
+    position: absolute;
+    top: -2rem;
+  }
+  #wisdom::before { left: 2rem; }
+  #wisdom::after { content: '"'; right: 2rem; bottom: -4rem; top: auto; }
+
+  .wisdom-quote {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    line-height: 1.4;
+    max-width: 760px;
+    margin: 0 auto 2rem;
+    position: relative;
+  }
+  .wisdom-attr {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* ─── SURVIVAL CHECKLIST ─── */
+  #checklist { background: var(--paper2); }
+  .checklist-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .checklist-intro {
+    font-size: 15px; line-height: 1.8;
+    color: var(--ink2);
+  }
+  .checklist-intro p { margin-bottom: 1rem; }
+
+  .checklist ul {
+    list-style: none;
+    border: 1.5px solid var(--ink);
+    padding: 0;
+  }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--paper3);
+    font-size: 14px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li:hover { background: var(--paper); }
+  .check-box {
+    width: 18px; height: 18px; min-width: 18px;
+    border: 1.5px solid var(--ink3);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+    transition: background 0.15s, border-color 0.15s;
+    font-size: 11px;
+    color: var(--paper);
+  }
+  .checklist li.checked .check-box {
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+  .checklist li.checked .check-text {
+    text-decoration: line-through;
+    color: var(--ink3);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink);
+    color: #555;
+    padding: 3rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 3px solid var(--gold);
+  }
+  .footer-brand {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    color: var(--paper);
+  }
+  .footer-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 768px) {
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 0 1.5rem 3.5rem; }
+    nav { padding: 0 1.5rem; }
+    .nav-links { gap: 1rem; }
+    .projects-layout { grid-template-columns: 1fr; }
+    .checklist-wrap { grid-template-columns: 1fr; }
+    .letter-body { padding: 2.5rem 2rem; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .footer-meta { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">PostAP Guide</span>
+  <div class="nav-links">
+    <a href="#letter">Letter</a>
+    <a href="#tips">Tips</a>
+    <a href="#projects">Projects</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-ornament">
+    <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="250" cy="250" r="200" fill="none" stroke="white" stroke-width="1"/>
+      <circle cx="250" cy="250" r="160" fill="none" stroke="white" stroke-width="0.5"/>
+      <line x1="50" y1="250" x2="450" y2="250" stroke="white" stroke-width="0.5"/>
+      <line x1="250" y1="50" x2="250" y2="450" stroke="white" stroke-width="0.5"/>
+      <line x1="109" y1="109" x2="391" y2="391" stroke="white" stroke-width="0.5"/>
+      <line x1="391" y1="109" x2="109" y2="391" stroke="white" stroke-width="0.5"/>
+      <polygon points="250,70 430,180 430,320 250,430 70,320 70,180" fill="none" stroke="white" stroke-width="0.5"/>
+      <text x="250" y="258" text-anchor="middle" font-family="Georgia" font-size="40" fill="white" opacity="0.15">PostAP</text>
+    </svg>
+  </div>
+
+  <div class="hero-tag">Everything they didn't tell you</div>
+  <h1>Survive &amp;<br><em>thrive</em> in<br>PostAP.</h1>
+  <p class="hero-sub">A field guide from students who made it through — written for the ones just getting started.</p>
+  <a href="#letter" class="hero-cta">Begin reading ↓</a>
+
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    scroll
+  </div>
+</section>
+
+<!-- LETTER -->
+<section id="letter">
+  <div class="section-label">01 — Open Letter</div>
+  <h2 class="section-title">Dear Future<br>PostAP Student,</h2>
+
+  <div class="letter-body fade-in">
+    <div class="letter-date">Written at the end of the year — with hindsight</div>
+    <div class="letter-salutation">Dear Future PostAP Student,</div>
+
+    <p>You've just signed up for something genuinely unlike anything else in your high school experience. That's not hype — it's a warning and a promise at the same time. PostAP will ask more of you than a standard class, but not in the ways you'd expect. It won't pile on busywork. Instead, it will hand you a blank page and ask: <em>what do you actually want to make?</em></p>
+
+    <p>That question sounds freeing. And it is — eventually. But early on, a blank page is one of the most terrifying things a student can face. You're so used to being told exactly what to do, how many pages to write, which chapters to read. PostAP strips that scaffolding away, and for a while, you might feel like you're falling.</p>
+
+    <p>You're not falling. You're learning to build your own scaffold.</p>
+
+    <p>The students who struggle most are usually the ones who wait for someone to tell them what "counts." The students who thrive are the ones who decide for themselves what's worth their energy — and then pour that energy in without apology. Your project doesn't have to be impressive by some outside standard. It has to be <em>genuinely yours.</em></p>
+
+    <p>Ask for help early, not when you're already stuck. Talk to your classmates constantly — they are doing things you'd never think of, and that will spark ideas in you. Protect your time, but not so fiercely that you stop exploring. And when something feels awkward or half-formed, keep going anyway. The best work usually passes through an ugly middle phase.</p>
+
+    <p>You're going to look back on this year differently than any other. Not because it was easy — it wasn't. But because it was <em>real.</em></p>
+
+    <div class="letter-sig">
+      — Your predecessors, who now know better
+    </div>
+  </div>
+</section>
+
+<!-- TIPS -->
+<section id="tips">
+  <div class="section-label">02 — Survival Tips</div>
+  <h2 class="section-title">What we wish<br>we'd known.</h2>
+
+  <div class="tips-grid">
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 01</span>
+      <h3>Start before you're ready</h3>
+      <p>Waiting for the "perfect" idea is a trap. Your first idea will evolve — but only if you start working with it. Launch the imperfect version. Iterate from there.</p>
+      <div class="tip-accent">→</div>
+    </div>
+
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 02</span>
+      <h3>Protect your deep work time</h3>
+      <p>PostAP rewards sustained focus more than scattered effort. Block off time in your calendar like it's a non-negotiable appointment — because it is.</p>
+      <div class="tip-accent">→</div>
+    </div>
+
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 03</span>
+      <h3>Document as you go</h3>
+      <p>Don't wait until the end to record what you did. A photo, a quick note, a paragraph written the same day — these become invaluable when it's time to present or reflect.</p>
+      <div class="tip-accent">→</div>
+    </div>
+
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 04</span>
+      <h3>Embrace the uncomfortable "middle"</h3>
+      <p>Every project hits a phase where it feels messy and unclear. This is normal — it means you're actually doing something meaningful. Push through it.</p>
+      <div class="tip-accent">→</div>
+    </div>
+
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 05</span>
+      <h3>Your classmates are resources</h3>
+      <p>Seriously. Talk to them. Ask what they're working on. Their projects will reframe what's possible for yours. Cross-pollination of ideas is where PostAP magic happens.</p>
+      <div class="tip-accent">→</div>
+    </div>
+
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 06</span>
+      <h3>Ask "why" before "how"</h3>
+      <p>Before diving into execution, spend real time on purpose. Why does this project matter to you? That "why" will carry you through every frustrating roadblock.</p>
+      <div class="tip-accent">→</div>
+    </div>
+
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 07</span>
+      <h3>Failure is data, not verdict</h3>
+      <p>When something doesn't work, you've learned something specific. Log it. Adjust. The project you end with will almost never look like the one you planned — and that's a sign of growth.</p>
+      <div class="tip-accent">→</div>
+    </div>
+
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 08</span>
+      <h3>Don't perform effort — do work</h3>
+      <p>PostAP will see through "busy." Make things that actually challenge you. The grade (and more importantly, the growth) lives in the genuine stretch, not the performance of one.</p>
+      <div class="tip-accent">→</div>
+    </div>
+
+    <div class="tip-card fade-in">
+      <span class="tip-number">Tip 09</span>
+      <h3>Let your format surprise you</h3>
+      <p>Your final artifact doesn't have to be a paper or a presentation. A zine, a short film, a working prototype, a map — think about what format would actually make your work sing.</p>
+      <div class="tip-accent">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<section id="wisdom">
+  <div class="wisdom-quote fade-in">
+    "The blank page isn't an obstacle. It's an invitation. The sooner you stop waiting for instructions, the sooner you start doing work that actually matters."
+  </div>
+  <div class="wisdom-attr">— Collective PostAP wisdom</div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">03 — What We Made</div>
+  <h2 class="section-title">Our projects,<br>documented.</h2>
+
+  <div class="projects-layout">
+    <div class="project-entry fade-in">
+      <div class="project-number">01</div>
+      <div class="project-info">
+        <span class="project-tag">Research &amp; Writing</span>
+        <h3>Deep Dive: The Psychology of Procrastination</h3>
+        <p>Investigated the neurological and behavioral roots of procrastination, producing a long-form essay and a practical guide shared with the broader student body.</p>
+      </div>
+    </div>
+
+    <div class="project-entry fade-in">
+      <div class="project-number">02</div>
+      <div class="project-info">
+        <span class="project-tag">Design &amp; Making</span>
+        <h3>Illustrated Zine: "What Nobody Told Me"</h3>
+        <p>A hand-drawn, hand-lettered zine collecting honest reflections on high school from current seniors, printed and distributed at the library.</p>
+      </div>
+    </div>
+
+    <div class="project-entry fade-in">
+      <div class="project-number">03</div>
+      <div class="project-info">
+        <span class="project-tag">Civic &amp; Community</span>
+        <h3>Local History Audio Tour</h3>
+        <p>Created a self-guided walking tour of the town using recorded narration, archival photos, and a custom map — QR codes posted at each location.</p>
+      </div>
+    </div>
+
+    <div class="project-entry fade-in">
+      <div class="project-number">04</div>
+      <div class="project-info">
+        <span class="project-tag">Technology</span>
+        <h3>Accessibility Audit &amp; Report</h3>
+        <p>Conducted a systematic accessibility review of the school website, produced a detailed report with recommendations, and presented findings to administration.</p>
+      </div>
+    </div>
+
+    <div class="project-entry fade-in">
+      <div class="project-number">05</div>
+      <div class="project-info">
+        <span class="project-tag">Arts &amp; Performance</span>
+        <h3>Original Short Documentary</h3>
+        <p>Produced a 12-minute documentary exploring how three students in the school navigate language barriers — screened at the spring showcase.</p>
+      </div>
+    </div>
+
+    <div class="project-entry fade-in">
+      <div class="project-number">06</div>
+      <div class="project-info">
+        <span class="project-tag">Science &amp; Analysis</span>
+        <h3>Urban Heat Island Study</h3>
+        <p>Collected temperature data across 14 locations in the city over 8 weeks, mapped the results, and proposed policy interventions in a formal report.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top: 3rem; color: #555; font-size: 14px; font-family: var(--mono); letter-spacing: 0.05em;">
+    ↳ These are examples. Your project can — and should — be something entirely different.
+  </p>
+</section>
+
+<!-- CHECKLIST -->
+<section id="checklist">
+  <div class="section-label">04 — Before You Begin</div>
+  <h2 class="section-title">Your PostAP<br>survival checklist.</h2>
+
+  <div class="checklist-wrap">
+    <div class="checklist-intro fade-in">
+      <p>Use this as a practical starting framework. Tick things off as you get your footing — or use it mid-year when you feel like you've lost your way.</p>
+      <p>None of these are required. All of them are useful. The students who thrived tended to have, consciously or not, done most of them.</p>
+      <p style="font-family: var(--mono); font-size: 12px; color: var(--ink3); margin-top: 1.5rem; letter-spacing: 0.05em;">
+        Click items to mark them complete.
+      </p>
+    </div>
+
+    <div class="checklist fade-in">
+      <ul id="checkList">
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Written down in one sentence what my project is about and why it matters to me</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Identified who the audience for my work actually is</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Blocked recurring work time in my schedule</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Started a running document/journal to capture progress</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Talked to at least two classmates about what they're working on</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Identified one person outside school who could give feedback</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Made something — anything — even if rough and incomplete</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Asked for help before I was completely stuck</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Reflected on what I've learned so far — not just what I've done</span>
+        </li>
+        <li onclick="toggleCheck(this)">
+          <div class="check-box"></div>
+          <span class="check-text">Chosen a format for my final artifact that actually excites me</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">PostAP Survival Guide</div>
+  <div class="footer-meta">
+    Created by students, for students<br>
+    Shared with the incoming cohort<br>
+    <span style="color: var(--gold); margin-top: 0.25rem; display: block;">Good luck. You've got this.</span>
+  </div>
+</footer>
+
+<script>
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+  }
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
